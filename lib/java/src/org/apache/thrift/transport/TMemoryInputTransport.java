@@ -93,4 +93,10 @@ public final class TMemoryInputTransport extends TTransport {
     pos_ += len;
   }
 
+  public void pushBack(byte[] b) throws TTransportException{
+    if (pos_ < b.length) {
+      throw new TTransportException("Buffer space not enough to put data back");
+    }
+    pos_ -= b.length;
+  }
 }

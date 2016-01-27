@@ -175,4 +175,8 @@ public class TFramedTransport extends TTransport {
       ((buf[2] & 0xff) <<  8) |
       ((buf[3] & 0xff));
   }
+  
+  public void pushBack(byte[] b) throws TTransportException{
+    readBuffer_.pushBack(b);
+  }
 }

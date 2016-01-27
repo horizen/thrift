@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -80,7 +81,7 @@ public class TSocket extends TIOStreamTransport {
 
     if (isOpen()) {
       try {
-        inputStream_ = new BufferedInputStream(socket_.getInputStream(), 1024);
+        inputStream_ = new PushbackInputStream(new BufferedInputStream(socket_.getInputStream(), 1024));//for the support of replay
         outputStream_ = new BufferedOutputStream(socket_.getOutputStream(), 1024);
       } catch (IOException iox) {
         close();
@@ -245,4 +246,20 @@ public class TSocket extends TIOStreamTransport {
     }
   }
 
+  /**
+   * push back to stream,please make sure 
+   * there is  enough room in the pushback
+   * buffer for the specified number of bytes,
+   * or this input stream has not been closed by
+   * invoking its {@link #close()} method
+   * 
+   */
+  public void pushBack(byte[] b) throws TTransportException {
+    PushbackInputStream stream_ = (PushbackInputStream) inputStream_;
+    try {
+      stream_.unread(b);
+    } catch (IOException e) {
+      throw new TTransportException(e.getMessage(), e);
+    }
+  }
 }

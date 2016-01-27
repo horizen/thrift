@@ -160,4 +160,11 @@ public abstract class TTransport implements Closeable {
    * @param len
    */
   public void consumeBuffer(int len) {}
+
+  /**
+   * push data back to the header of buffer or stream
+   * @param bytes
+   * @exception TTransportException if an error occurs writing data
+   */
+  public void pushBack(byte[] b) throws TTransportException{}
 }
